@@ -5,25 +5,26 @@ Example:
 package main
 
 import (
+
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/qinains/fastergoding" // add this code
+
 )
 
-func main() {
-	fastergoding.Run("-mod", "vendor", "-o", "myServer") // add this code
+	func main() {
+		fastergoding.Run("-mod", "vendor", "-o", "myServer") // add this code
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello %s!", r.URL.Query().Get("name"))
-	})
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "Hello %s!", r.URL.Query().Get("name"))
+		})
+		err := http.ListenAndServe(":8080", nil)
+		if err != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
 	}
-}
-
 */
 package fastergoding
 
@@ -112,7 +113,7 @@ func watch(rootPath string, buildArgs ...string) {
 			select {
 			case event := <-watcher.Events:
 				filePath := event.Name
-				if !strings.HasSuffix(filePath, ".go") || strings.Contains(filePath, ".#") {
+				if !isWatchedFile(filePath) {
 					continue
 				}
 				fi, _ := os.Stat(filePath)
@@ -131,8 +132,13 @@ func watch(rootPath string, buildArgs ...string) {
 		}
 	}()
 
-	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
+			err = watcher.Add(path)
+			if err != nil {
+				log.Fatalf("Watcher add error: %s", err)
+			}
+		} else if isWatchedFile(path) {
 			err = watcher.Add(path)
 			if err != nil {
 				log.Fatalf("Watcher add error: %s", err)
@@ -141,6 +147,14 @@ func watch(rootPath string, buildArgs ...string) {
 		}
 		return nil
 	})
+
+	if err != nil {
+		log.Fatalf("Walk error: %s", err)
+	}
+}
+
+func isWatchedFile(filePath string) bool {
+	return strings.HasSuffix(filePath, ".go") || strings.HasSuffix(filePath, ".html")
 }
 
 /*
