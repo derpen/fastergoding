@@ -1,4 +1,4 @@
-module github.com/qinains/fastergoding
+module github.com/derpen/fastergoding
 
 require (
 	github.com/fsnotify/fsnotify v1.4.7
