@@ -82,40 +82,28 @@ func restart(rootPath string, buildArgs ...string) {
 			log.Printf("Kill recover: %s", e)
 		}
 	}()
-
 	if mainCmd != nil && mainCmd.Process != nil {
 		err := mainCmd.Process.Kill()
 		if err != nil {
 			log.Printf("Process kill error: %s", err)
 		}
 	}
-
 	go func() {
-		var cmd *exec.Cmd
+		appName := "./" + path.Base(rootPath)
 		if runtime.GOOS == "windows" {
-			cmd = exec.Command("cmd", "/c", appName)
-		} else {
-			cmd = exec.Command(appName)
+			appName += ".exe"
 		}
-
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Env = append(os.Environ(), runMode+"="+runMode)
-
-		err := cmd.Start()
+		mainCmd = exec.Command(appName)
+		mainCmd.Stdout = os.Stdout
+		mainCmd.Stderr = os.Stderr
+		mainCmd.Args = append([]string{appName})
+		mainCmd.Env = append(os.Environ(), runMode+"="+runMode)
+		err := mainCmd.Start()
 		if err != nil {
-			log.Printf("Command start error: %s", err)
-			return
-		}
-
-		mainCmd = cmd
-		err = cmd.Wait()
-		if err != nil {
-			log.Printf("Command wait error: %s", err)
+			log.Fatalf("Start error: %s", err)
 		}
 	}()
 }
-
 
 func watch(rootPath string, buildArgs ...string) {
 	watcher, err := fsnotify.NewWatcher()
