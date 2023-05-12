@@ -2,6 +2,8 @@
 
 A gopher tool for faster coding. It can automatically compile and rerun the main.main() function when the files is changed.
 
+In this fork, fastergoding also detects if any html file is changed, instead of just detecting changes in go files. This is probably what you need if you are constantly editing a rendered html template.
+
 ## Usage
 ```bash
 cd {your-project}
