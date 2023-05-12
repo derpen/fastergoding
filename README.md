@@ -7,7 +7,7 @@ In this fork, fastergoding also detects if any html file is changed, instead of 
 ## Usage
 ```bash
 cd {your-project}
-go get -u github.com/qinains/fastergoding
+go get -u github.com/derpen/fastergoding
 ```
 then edit the `main.go` file
 ```go
@@ -18,7 +18,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/qinains/fastergoding" // add this code
+	"github.com/derpen/fastergoding" // add this code
 )
 
 func main() {
