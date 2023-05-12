@@ -37,7 +37,7 @@ func main() {
 
 ```bash
 export GOPROXY=https://goproxy.cn #if you live in China
-go get -u github.com/qinains/fastergoding
+go get -u github.com/derpen/fastergoding
 ```
 
 ## Reference
