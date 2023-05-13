@@ -98,10 +98,7 @@ func restart(rootPath string, buildArgs ...string) {
 		mainCmd.Stderr = os.Stderr
 		mainCmd.Args = append([]string{appName})
 		mainCmd.Env = append(os.Environ(), runMode+"="+runMode)
-		err := mainCmd.Start()
-		if err != nil {
-			log.Fatalf("Start error: %s", err)
-		}
+		mainCmd.Run()
 	}()
 }
 
