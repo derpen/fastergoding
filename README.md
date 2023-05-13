@@ -22,7 +22,12 @@ import (
 )
 
 func main() {
-	fastergoding.Run("-mod", "vendor", "-o", "myServer") // add this code
+	// Add this code
+	fastergoding.Run() 
+	
+	// If your main is not in root folder, do something like this
+	fastergoding.Run("./main/main.go")
+	
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello %s!", r.URL.Query().Get("name"))
 	})
