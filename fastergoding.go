@@ -32,7 +32,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -66,11 +65,14 @@ func restart(rootPath string, buildArgs ...string) {
 	lock.Lock()
 	defer lock.Unlock()
 
-	appName := "./" + path.Base(rootPath)
+	appName := filepath.Base(rootPath)
+	if runtime.GOOS == "windows" {
+		appName += ".exe"
+	}
 	cmdArgs := append([]string{"build", "-o", appName}, buildArgs...)
 	for index, buildArg := range buildArgs {
 		if strings.Contains(buildArg, "-o") {
-			appName = "./" + buildArgs[index+1]
+			appName = buildArgs[index+1]
 			cmdArgs = append([]string{"build"}, buildArgs...)
 			break
 		}
@@ -89,7 +91,7 @@ func restart(rootPath string, buildArgs ...string) {
 		}
 	}
 	go func() {
-		appName := "./" + path.Base(rootPath)
+		appName := "./" + filepath.Base(rootPath)
 		if runtime.GOOS == "windows" {
 			appName += ".exe"
 		}
