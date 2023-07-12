@@ -18,15 +18,16 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/derpen/fastergoding" // add this code
+	"github.com/derpen/fastergoding" // add this code
 )
 
 func main() {
-	// Add this code
+	// Add this code
 	fastergoding.Run() 
 	
-	// If your main is not in root folder, do something like this
-	fastergoding.Run("./main/main.go")
+	// If your main.go is not in root folder, point to the folder from where you run go run
+	// So, something like this
+	fastergoding.Run("./cmd/api/main/")
 	
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello %s!", r.URL.Query().Get("name"))
